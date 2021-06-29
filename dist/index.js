@@ -113,6 +113,14 @@ module.exports = function (source, map) {
         ...(typeof options.minifyHtml === "object" ? options.minifyHtml : {}),
       });
     }
+    if (options.searchAndReplace && options.searchAndReplace.length > 0) {
+      for (let i = 0; i < options.searchAndReplace.length; i++) {
+        result = result.replace(
+          options.searchAndReplace[i].search || "",
+          options.searchAndReplace[i].replace || ""
+        );
+      }
+    }
     _this.emitFile(relativePath, result);
   });
 
