@@ -14,6 +14,8 @@ var merge = require("lodash.merge");
 
 var _partials = _interopRequireDefault(require("./utils/partials"));
 
+var minify = require("html-minifier").minify;
+
 var _data2 = _interopRequireDefault(require("./utils/data"));
 
 function _interopRequireDefault(obj) {
@@ -91,9 +93,14 @@ module.exports = function (source, map) {
     if (options.extract === false) {
       data.absRefPrefix = "./";
     }
-
+    if (options.minifyHtml) {
+      source = minify(source || "", {
+        ...(typeof options.minifyHtml === "object" ? options.minifyHtml : {}),
+      });
+    }
     var template = _handlebars.default.compile(source);
     data = merge(data, options.dataToCompile || {});
+
     var result = template(data);
 
     if (options.extract === false) {
