@@ -10,29 +10,37 @@ var _helpers = _interopRequireDefault(require("./utils/helpers"));
 
 var _lodash = _interopRequireDefault(require("lodash.merge"));
 
+var merge = require("lodash.merge");
+
 var _partials = _interopRequireDefault(require("./utils/partials"));
 
 var _data2 = _interopRequireDefault(require("./utils/data"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 var _data = [];
 var languages = [];
 /**
-  * if options.extract is set to false --> object with markup will be returned
-  * used if file is not being written (static) - markup can be loaded via JS
-  * @type {object}
-*/
+ * if options.extract is set to false --> object with markup will be returned
+ * used if file is not being written (static) - markup can be loaded via JS
+ * @type {object}
+ */
 
 var resultObject = {};
 
 module.exports = function (source, map) {
   var _this = this;
 
-  var options = Object.assign({}, {
-    partialNamer: _utils.defaultNamer,
-    helperNamer: _utils.defaultHelperNamer
-  }, (0, _loaderUtils.getOptions)(this));
+  var options = Object.assign(
+    {},
+    {
+      partialNamer: _utils.defaultNamer,
+      helperNamer: _utils.defaultHelperNamer,
+    },
+    (0, _loaderUtils.getOptions)(this)
+  );
 
   if (options.partials) {
     var partials = new _partials.default(_handlebars.default, options, this);
@@ -55,16 +63,24 @@ module.exports = function (source, map) {
     var languageName = language.name;
     var languagePath = "/".concat(languageName);
 
-    if (languageName === options['rootData']) {
-      languagePath = '';
+    if (languageName === options["rootData"]) {
+      languagePath = "";
     }
 
     var data = _data.reduce(function (reducedData, dataObject) {
       return (0, _lodash.default)(reducedData, dataObject);
     }, {});
 
-    var routeName = (0, _utils.removeExtension)(_this.resourcePath.substr(_this.resourcePath.indexOf(options['relativePathTo']) + options['relativePathTo'].length));
-    var relativePath = "".concat(options['outputpath']).concat(languagePath).concat(routeName, ".html");
+    var routeName = (0, _utils.removeExtension)(
+      _this.resourcePath.substr(
+        _this.resourcePath.indexOf(options["relativePathTo"]) +
+          options["relativePathTo"].length
+      )
+    );
+    var relativePath = ""
+      .concat(options["outputpath"])
+      .concat(languagePath)
+      .concat(routeName, ".html");
     data = (0, _lodash.default)(data, language.data);
     data.absRefPrefix = (0, _utils.getRelativePath)(relativePath);
     data.language = languageName;
@@ -73,11 +89,11 @@ module.exports = function (source, map) {
      */
 
     if (options.extract === false) {
-      data.absRefPrefix = './';
+      data.absRefPrefix = "./";
     }
 
     var template = _handlebars.default.compile(source);
-
+    data = merge(data, options.dataToCompile || {});
     var result = template(data);
 
     if (options.extract === false) {
@@ -96,6 +112,5 @@ module.exports = function (source, map) {
     return resultObject;
   } //TODO: use better return value for testing
 
-
-  return 'true';
+  return "true";
 };
