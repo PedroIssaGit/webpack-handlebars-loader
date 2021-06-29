@@ -95,6 +95,7 @@ module.exports = function (source, map) {
     }
     if (options.minifyHtml) {
       source = minify(source || "", {
+        continueOnParseError: true,
         ...(typeof options.minifyHtml === "object" ? options.minifyHtml : {}),
       });
     }
