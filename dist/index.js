@@ -93,12 +93,7 @@ module.exports = function (source, map) {
     if (options.extract === false) {
       data.absRefPrefix = "./";
     }
-    if (options.minifyHtml) {
-      source = minify(source || "", {
-        continueOnParseError: true,
-        ...(typeof options.minifyHtml === "object" ? options.minifyHtml : {}),
-      });
-    }
+
     var template = _handlebars.default.compile(source);
     data = merge(data, options.dataToCompile || {});
 
@@ -112,7 +107,12 @@ module.exports = function (source, map) {
       resultObject[languageName][routeName] = result;
       return;
     }
-
+    if (options.minifyHtml) {
+      result = minify(result, {
+        continueOnParseError: true,
+        ...(typeof options.minifyHtml === "object" ? options.minifyHtml : {}),
+      });
+    }
     _this.emitFile(relativePath, result);
   });
 
