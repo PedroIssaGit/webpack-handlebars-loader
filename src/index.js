@@ -1,26 +1,35 @@
-import { getOptions } from 'loader-utils';
-import { defaultNamer, defaultHelperNamer, getRelativePath, removeExtension } from './utils/utils';
-import Handlebars from 'handlebars';
-import Helpers from './utils/helpers';
-import merge from 'lodash.merge';
-import Partials from './utils/partials';
-import Data from './utils/data';
+import { getOptions } from "loader-utils";
+import {
+  defaultNamer,
+  defaultHelperNamer,
+  getRelativePath,
+  removeExtension,
+} from "./utils/utils";
+import Handlebars from "handlebars";
+import Helpers from "./utils/helpers";
+import merge from "lodash.merge";
+import Partials from "./utils/partials";
+import Data from "./utils/data";
 
 let _data = [];
 let languages = [];
 
 /**
-  * if options.extract is set to false --> object with markup will be returned
-  * used if file is not being written (static) - markup can be loaded via JS
-  * @type {object}
-*/
+ * if options.extract is set to false --> object with markup will be returned
+ * used if file is not being written (static) - markup can be loaded via JS
+ * @type {object}
+ */
 let resultObject = {};
 
-module.exports = function(source, map) {
-  const options = Object.assign({}, {
-    partialNamer: defaultNamer,
-    helperNamer: defaultHelperNamer
-  }, getOptions(this));
+module.exports = function (source, map) {
+  const options = Object.assign(
+    {},
+    {
+      partialNamer: defaultNamer,
+      helperNamer: defaultHelperNamer,
+    },
+    getOptions(this)
+  );
 
   if (options.partials) {
     const partials = new Partials(Handlebars, options, this);
@@ -39,16 +48,24 @@ module.exports = function(source, map) {
     languages = data.languages;
   }
 
-  languages.forEach((language)=>{
+  languages.forEach((language) => {
     const languageName = language.name;
     let languagePath = `/${languageName}`;
-    if (languageName === options['rootData']) {
-      languagePath = '';
+    if (languageName === options["rootData"]) {
+      languagePath = "";
     }
 
-    let data = _data.reduce((reducedData, dataObject) => merge(reducedData, dataObject), {});
-    const routeName = removeExtension(this.resourcePath.substr(this.resourcePath.indexOf(options['relativePathTo']) + options['relativePathTo'].length));
-    const relativePath = `${options['outputpath']}${languagePath}${routeName}.html`;
+    let data = _data.reduce(
+      (reducedData, dataObject) => merge(reducedData, dataObject),
+      {}
+    );
+    const routeName = removeExtension(
+      this.resourcePath.substr(
+        this.resourcePath.indexOf(options["relativePathTo"]) +
+          options["relativePathTo"].length
+      )
+    );
+    const relativePath = `${options["outputpath"]}${languagePath}${routeName}.html`;
     data = merge(data, language.data);
 
     data.absRefPrefix = getRelativePath(relativePath);
@@ -57,14 +74,17 @@ module.exports = function(source, map) {
     /**
      * ignore absRefPrefix if files are not being written but loaded with JS
      */
+    if (typeof options.onCompileData === "object") {
+      Object.assign(data, data.onCompileData);
+    }
     if (options.extract === false) {
-      data.absRefPrefix = './';
+      data.absRefPrefix = "./";
     }
 
     const template = Handlebars.compile(source);
     const result = template(data);
 
-    if(options.extract === false) {
+    if (options.extract === false) {
       if (!resultObject[languageName]) {
         resultObject[languageName] = {};
       }
@@ -80,5 +100,5 @@ module.exports = function(source, map) {
   }
 
   //TODO: use better return value for testing
-  return 'true';
+  return "true";
 };
