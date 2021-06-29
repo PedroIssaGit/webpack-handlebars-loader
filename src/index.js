@@ -74,7 +74,6 @@ module.exports = function (source, map) {
     /**
      * ignore absRefPrefix if files are not being written but loaded with JS
      */
-
     if (options.extract === false) {
       data.absRefPrefix = "./";
     }
