@@ -68,6 +68,7 @@ module.exports = function (source, map) {
     const relativePath = `${options["outputpath"]}${languagePath}${routeName}.html`;
     data = merge(data, language.data);
     console.log(options.dataToCompile);
+    throw new Error("Whoops!");
     data = merge(data, options.dataToCompile || {});
     data.absRefPrefix = getRelativePath(relativePath);
     data.language = languageName;
