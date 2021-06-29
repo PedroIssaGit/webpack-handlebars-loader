@@ -74,9 +74,12 @@ module.exports = function (source, map) {
     /**
      * ignore absRefPrefix if files are not being written but loaded with JS
      */
-    if (typeof options.onCompileData === "object") {
-      Object.assign(data, options.onCompileData);
-    }
+    options.onCompileData = options.onCompileData
+      ? JSON.parse(options.onCompileData)
+      : {};
+
+    Object.assign(data, options.onCompileData);
+
     if (options.extract === false) {
       data.absRefPrefix = "./";
     }
