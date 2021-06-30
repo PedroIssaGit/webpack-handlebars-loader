@@ -66,7 +66,7 @@ module.exports = function (source, map) {
     var languagePath = "/".concat(languageName);
 
     if (languageName === options["rootData"]) {
-      languagePath = "";
+      //languagePath = "";
     }
 
     var data = _data.reduce(function (reducedData, dataObject) {
