@@ -44,6 +44,12 @@ module.exports = function (source, map) {
     (0, _loaderUtils.getOptions)(this)
   );
 
+  _handlebars.registerHelper("raw-helper", function (options) {
+    return options.fn();
+  });
+  _handlebars.registerHelper("raw", function (options) {
+    return options.fn();
+  });
   if (options.partials) {
     var partials = new _partials.default(_handlebars.default, options, this);
     partials.addDependencies();
