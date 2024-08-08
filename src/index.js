@@ -6,6 +6,14 @@ import {
   removeExtension,
 } from "./utils/utils";
 import Handlebars from "handlebars";
+import { array, collection, math, number } from 'useful-handlebars-helpers';
+
+[array, collection, math, number].forEach(
+  (helper) => {
+    Handlebars.registerHelper(helper);
+  },
+);
+
 import Helpers from "./utils/helpers";
 import merge from "lodash.merge";
 import Partials from "./utils/partials";
